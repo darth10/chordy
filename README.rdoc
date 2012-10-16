@@ -1,0 +1,50 @@
+= chordy
+
+chordy is a simple DSL to describe guitar chords.
+A chordy script produces output that looks like a song with various chords, sections and notes.
+
+It supports most chord families, chord types. Chords can also have variation, such as a palm-mute or a trill.  
+Formatting options are also provided.
+
+You can declare chords to play using the 'play' function. Here's a sample chordy script.
+
+  # 'sample.rb'
+  require 'chordy'
+  
+  play :C
+  play "E"
+  play :C, :m
+  play "E", "minor"
+  
+  play [-1, 3, 3, 2, 0, 1, -1]
+  play [-1, 0, 2, 2]
+
+Here's what the output of the script looks like.
+
+  $ ruby sample.rb
+  # TODO #
+  
+TODO effects
+
+TODO sections and text 
+
+== Contributing to chordy
+ 
+* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
+* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
+* Fork the project.
+* Start a feature/bugfix branch.
+* Commit and push until you are happy with your contribution.
+* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
+* Make sure your code is formatted as described in the Github Ruby style-guide.
+* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+
+=== LOL
+
+sdfsd
+* sdfsd
+
+== Copyright
+
+Copyright (c) 2012 Akhil Wali, under MIT license.
+
