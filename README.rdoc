@@ -1,15 +1,109 @@
 = chordy
 
-chordy is a simple DSL to describe guitar chords.
+chordy is a DSL written in Ruby for printing guitar chord diagrams.
 A chordy script produces output that looks like a song with various chords, sections and notes.
 
-It supports most chord families, chord types. Chords can also have variation, such as a palm-mute or a trill.  
+It supports all chord families and most chord types.
+Variations in chords, such as a palm-mute or a trill, are also supported.  
 Formatting options are also provided.
 
-You can declare chords to play using the 'play' function. Here's a sample chordy script.
+== Installation
+
+<em>Ruby Gems</em> is required.
+
+Download the latest gem distribution from the {downloads page}[http://github.com/darth10/chordy/downloads]
+and run <code>gem install chordy.gem</code> to install chordy.
+
+== Usage
+
+After installing the chordy gem, you can start chordy in an interactive mode through <code>irb</code>.
+You can declare chords to play using the <code>play</code> function. 
+
+  $ irb -r chordy
+  irb(main):001:0> play C
+   E [--3-]
+   A [--3-]
+   D [--2-]
+   G [--0-]
+   B [--1-]
+   E [--0-]
+
+
+  => #<C:0x4d896f8 @flags=0, @strings=[3, 3, 2, 0, 1, 0], @type=:major>
+
+  irb(main):002:0> play EFlat
+   E [--3-----]
+   A [--3---1-]
+   D [--2---1-]
+   G [--0---3-]
+   B [--1---4-]
+   E [--0---3-]
+
+
+  => #<DSharp:0x4d7afc8 @flags=0, @strings=[-1, 1, 1, 3, 4, 3], @type=:major>
+
+  irb(main):003:0>
+
+To specify a chord type such a minor or a suspended chord, specify a second parameter such as <code>:minor</code> or <code>:suspended_4</code>.
+The chord type can also specified in a shorter way like <code>:m</code> or <code>:sus4</code>.
+Note that the default for this parameter is <code>:major</code>, which is shortened to <code>:M</code>.
+Visit this wiki page for a complete listing of all chord families and types.
+
+  irb(main):001:0> play C, :minor
+   E [----]
+   A [--3-]
+   D [--1-]
+   G [--0-]
+   B [--4-]
+   E [--3-]
+          
+  
+  => #<C:0xb72e1924 @flags=0, @strings=[-1, 3, 1, 0, 4, 3], @type=:minor>
+
+  irb(main):002:0> play E, :sus4
+   E [------0-]
+   A [--3---2-]
+   D [--1---2-]
+   G [--0---2-]
+   B [--4---0-]
+   E [--3---0-]
+              
+  
+  => #<E:0xb72df138 @flags=0, @strings=[0, 2, 2, 2, 0, 0], @type=:suspended_4>
+
+  irb(main):003:0> 
+
+A chord can also be described in terms of it's strings, by just passing an array of integers to the <code>play</code> function.
+
+  irb(main):001:0> play [5]
+   E [--5-]
+   A [----]
+   D [----]
+   G [----]
+   B [----]
+   E [----]
+         
+ 
+  => #<Chord:0xb726e2e4 @strings=[5, -1, -1, -1, -1, -1], @flags=0>
+
+  irb(main):002:0> play [2, 4, 4]
+   E [--5---2-]
+   A [------4-]
+   D [------4-]
+   G [--------]
+   B [--------]
+   E [--------]
+              
+  
+  => #<Chord:0xb726b01c @strings=[2, 4, 4, -1, -1, -1], @flags=0>
+
+  irb(main):003:0>
+
+You could also script the chords to play by using <code>require 'chordy_script'</code>.
+Here's a sample chordy script.
 
   # 'sample.rb'
-  require 'chordy'
+  require 'chordy_script'
   
   play :C
   play "E"
@@ -23,12 +117,20 @@ Here's what the output of the script looks like.
 
   $ ruby sample.rb
   # TODO #
-  
+
+TODO wiki link
+
+TODO tuning
+
 TODO effects
 
 TODO sections and text 
 
-== Contributing to chordy
+== Documentation
+
+Visit the wiki for more information. To generate the API documentation, use <code>rake rdoc</code>.
+
+== Contributing
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
@@ -38,13 +140,3 @@ TODO sections and text
 * Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
 * Make sure your code is formatted as described in the Github Ruby style-guide.
 * Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
-
-=== LOL
-
-sdfsd
-* sdfsd
-
-== Copyright
-
-Copyright (c) 2012 Akhil Wali, under MIT license.
-
