@@ -118,7 +118,7 @@ Here's what the output of the script looks like.
   $ ruby sample.rb
   # TODO #
 
-TODO wiki link
+TODO wiki link for chord reference
 
 TODO tuning
 
@@ -128,7 +128,7 @@ TODO sections and text
 
 == Documentation
 
-Visit the wiki for more information. To generate the API documentation, use <code>rake rdoc</code>.
+Visit the wiki[http://darth10.github.com/chordy] for more information. To generate the API documentation, use <code>rake rdoc</code>.
 
 == Contributing
  
