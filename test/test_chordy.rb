@@ -9,8 +9,8 @@ class TestChordy < Test::Unit::TestCase
     flags = Chord::CHORD_FLAGS
     consts = Chord.constants
 
-    flags.each { |f| assert(methods.include?(f), "no method '#{f}' in Chord") }
-    flags.each { |f| assert(consts.include?(f.to_s.upcase), "no method '#{f}' in Chord") }
+    flags.each { |f| assert(methods.include?(f.to_sym), "no method '#{f}' in Chord") }
+    flags.each { |f| assert(consts.include?(f.upcase.to_sym), "no constant '#{f}' in Chord") }
   end
 
   should "knows all chord types" do
@@ -28,7 +28,7 @@ class TestChordy < Test::Unit::TestCase
 
     chord_families.each do |family|
       family_methods = family.instance_methods
-      short_chord_methods.each { |method| assert(family_methods.include? method) }
+      short_chord_methods.each { |method| assert(family_methods.include?(method.to_sym), "no method '#{method}' in #{family}") }
     end
   end
 
