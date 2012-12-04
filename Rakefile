@@ -16,7 +16,7 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   gem.name = "chordy"
   gem.rubyforge_project = "chordy"
-  gem.version = "0.6.8"
+  gem.version = "0.7.1"
   gem.homepage = "http://github.com/darth10/chordy"
   gem.license = "MIT"
   gem.summary = %Q{DSL for guitar chords}
