@@ -9,10 +9,7 @@ Formatting options are also provided.
 
 == Installation
 
-<em>Ruby Gems</em> is required.
-
-Download the latest gem distribution from the {downloads page}[http://github.com/darth10/chordy/downloads]
-and run <code>gem install chordy.gem</code> to install chordy.
+<em>Ruby Gems</em> is required. Run <code>gem install chordy</code> to install the gem.
 
 == Usage
 
