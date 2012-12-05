@@ -3,14 +3,23 @@
 require 'helper'
 
 class TestChordy < Test::Unit::TestCase
+  def test_chord
+    Chord.new(:M, 6)
+  end
+
   should "have private methods and constants for all chord flags" do
-    c = Chord.new(:M, 6)
-    methods = c.private_methods
+    c = test_chord
+    private_methods = c.private_methods
+    methods = c.methods
     flags = Chord::CHORD_FLAGS
     consts = Chord.constants
 
-    flags.each { |f| assert(methods.include?(f.to_sym), "no method '#{f}' in Chord") }
+    chord_flag_methods = flags.select { |c| c!= "dont_play"}.map { |c| "play_" + c.to_s }
+
     flags.each { |f| assert(consts.include?(f.upcase.to_sym), "no constant '#{f}' in Chord") }
+
+    flags.each { |method| assert(private_methods.include?(method.to_sym), "no class method '#{method}' in Chord") }
+    chord_flag_methods.each { |method| assert(methods.include?(method.to_sym), "no instance method '#{method}' in Chord") }
   end
 
   should "knows all chord types" do
@@ -30,11 +39,6 @@ class TestChordy < Test::Unit::TestCase
       family_methods = family.instance_methods
       short_chord_methods.each { |method| assert(family_methods.include?(method.to_sym), "no method '#{method}' in #{family}") }
     end
-  end
-
-  should "know all effects" do
-    # TODO implement
-    true
   end
 
   should "have 6,7 or 8 strings" do
