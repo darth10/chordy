@@ -156,6 +156,7 @@ This {wiki page}[http://darth10.github.com/chordy/tuning.html] contains a comple
   irb(main):004:0>
 
 You could also script the chords to play by using <code>require 'chordy_script'</code>.
+Just be sure to call <code>print_chords</code>.
 Here's a sample chordy script.
 
   # 'sample.rb'
@@ -169,12 +170,79 @@ Here's a sample chordy script.
   play [-1, 3, 3, 2, 0, 1, -1]
   play [-1, 0, 2, 2]
 
+  print_chords
+
 Here's what the output of the script looks like.
 
-  $ ruby sample.rb
-  # TODO #
+  $ ruby -r rubygems sample.rb
+   E [--3---0-------0--|--3-----]
+   A [--3---2---3---2--|--3---0-]
+   D [--2---2---1---2--|--2---2-]
+   G [--0---1---0---0--|--0---2-]
+   B [--1---0---4---0--|--1-----]
+   E [--0---0---3---0--|--------]
+  
 
-TODO sections and text 
+Text can be added by using <code>text</code>.
+To provide structure to your output, use <code>section</code> to separate chords.
+Here's the previous script with some text and sections.
+
+  # sample.rb
+  require 'chordy_script'
+  
+  text "Some tune"
+  
+  section "Intro"
+  
+  play :C
+  play "E"
+  
+  section "Phrase 1"
+  
+  play :C, :m
+  play "E", "minor"
+  
+  section "Phrase 2"
+  
+  play [-1, 3, 3, 2, 0, 1, -1]
+  play [-1, 0, 2, 2]
+  
+  print_chords
+
+Here's the output of the modified script.
+
+  $ ruby -r rubygems sample.rb
+  Some tune
+  
+  --Intro---------------------------------
+  
+   E [--3---0-]
+   A [--3---2-]
+   D [--2---2-]
+   G [--0---1-]
+   B [--1---0-]
+   E [--0---0-]
+  
+  
+  --Phrase 1------------------------------
+  
+   E [------0-]
+   A [--3---2-]
+   D [--1---2-]
+   G [--0---0-]
+   B [--4---0-]
+   E [--3---0-]
+  
+  
+  --Phrase 2------------------------------
+  
+   E [--3-----]
+   A [--3---0-]
+   D [--2---2-]
+   G [--0---2-]
+   B [--1-----]
+   E [--------]
+  
 
 == Documentation
 
