@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'chord'
+require File.join(File.dirname(__FILE__), '..', 'chord')
 
 class D < Chord
   def play_major
