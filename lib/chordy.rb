@@ -9,35 +9,36 @@ include_dirs.each do |dir|
   end
 end
 
-include Util
-include Tuning
-
 module Chordy
+  extend self, Util, Util::Tuning
 
-  $line_length = 8
-  $separator_length = 40
-  $chords = []
-  $auto = true
-  $tuning = tuning_6_standard.map { |e| e.capitalize  }
-  $reverse = false
+  attr_accessor :chords, :line_length, :separator_length, :tuning, :auto, :reverse
+  attr_accessor :chord_space, :half_length_delimiter, :start_delimiter, :end_delimiter
+
+  @line_length = 8
+  @separator_length = 40
+  @chords = []
+  @auto = true
+  @tuning = tuning_6_standard.map { |e| e.capitalize  }
+  @reverse = false
 
   # printing delimiters
-  $chord_space = "-"
-  $half_length_delimiter = "|"
-  $start_delimiter = "["
-  $end_delimiter = "]"
+  @chord_space = "-"
+  @half_length_delimiter = "|"
+  @start_delimiter = "["
+  @end_delimiter = "]"
 
   def auto a=true
-    $auto = if a then true else false end
+    Chordy.auto = if a then true else false end
   end
 
   def no_auto
     auto false
   end
 
-  def line_length a
+  def set_line_length a
     if a.instance_of? Fixnum
-      $line_length = a
+      Chordy.line_length = a
       do_print
     else
       puts "Invalid length"
@@ -45,7 +46,7 @@ module Chordy
   end
 
   def clear
-    $chords = []
+    Chordy.chords = []
     do_print
   end
 
@@ -53,9 +54,9 @@ module Chordy
 
   def set_tuning_with_padding tuning
     longest_tuning_str_length = tuning.max.length
-    $tuning = tuning.map { |e| e.capitalize.rjust(longest_tuning_str_length) }
+    tuning = tuning.map { |e| e.capitalize.rjust(longest_tuning_str_length) }
     
-    $chords = $chords.select { |c| c.is_a? Chord } .each { |e| e.pad_or_trim $tuning.length, true }
+    Chordy.chords = Chordy.select { |c| c.is_a? Chord } .each { |e| e.pad_or_trim Chordy.tuning.length, true }
   end
 
   def tune new_tuning
@@ -106,18 +107,18 @@ module Chordy
     chord = nil
     begin
       if chords.instance_of? Array
-        chord = Chord.new(chords, $tuning.length)
+        chord = Chord.new(chords, Chordy.tuning.length)
       else
         chord_name = chords.to_s
         if !check_chord_class chord_name
           chord_name = check_sharp_or_flat_chord chord_name
         end
 
-        chord_init = "#{chord_name}.new :#{chord_type}, #{$tuning.length}"
+        chord_init = "#{chord_name}.new :#{chord_type}, #{Chordy.tuning.length}"
         chord = eval(chord_init)
       end
 
-      $chords.push chord
+      Chordy.chords.push chord
       do_print
     rescue NameError => ne
       puts "Unknown chord or chord type"
@@ -131,12 +132,12 @@ module Chordy
   end
 
   def text text
-    $chords.push Text.new(text)
+    Chordy.chords.push Util::Text.new(text)
     do_print
   end
 
   def section title=""
-    $chords.push Section.new(title, $separator_length)
+    Chordy.chords.push Util::Section.new(title, Chordy.separator_length)
     do_print
   end
 
@@ -145,7 +146,7 @@ module Chordy
   end
 
   def do_print
-    if $auto
+    if Chordy.auto
       print_chords
     end
   end
@@ -154,20 +155,21 @@ module Chordy
     lines_to_print = []
     chord_index = 0
     chords_in_section = 0
-    tuning_length = $tuning.length
+    tuning_length = Chordy.tuning.length
     is_done = false
     is_new_line = true
-    is_even_line_length = ($line_length % 2) == 0
+    is_even_line_length = (Chordy.line_length % 2) == 0
     is_next_chord_section_or_text = false
     to_print_start_chords = false
     to_skip_end_strings = false
 
-    $chords.select { |c| c.is_a? Section } .each { |s| s.separator_length = $separator_length }
+    chords = Chordy.chords.to_a
+    chords.select { |c| c.is_a? Util::Section } .map { |s| s.separator_length = Chordy.separator_length }
 
     while !is_done
       if is_new_line or to_print_start_chords
-        if $chords[chord_index].is_a? Chord
-          start_strings = Chord.start_of_strings $tuning, $start_delimiter
+        if chords[chord_index].is_a? Chord
+          start_strings = Chord.start_of_strings Chordy.tuning, Chordy.start_delimiter
           start_strings.each { |s| lines_to_print.push s }
         end
         to_print_start_chords = false
@@ -175,40 +177,40 @@ module Chordy
       end
 
       last_chord_lines = lines_to_print.last(tuning_length + 1)
-      curr_chord = $chords[chord_index]
+      curr_chord = chords[chord_index]
       if curr_chord.is_a? Chord
         last_chord_lines.each_with_index do |line,i|
           if i == tuning_length
             line << curr_chord.print_flag
           else
-            line << curr_chord.print_string_at(i, $chord_space)
+            line << curr_chord.print_string_at(i, Chordy.chord_space)
           end
         end
         
         chords_in_section = chords_in_section + 1
         to_skip_end_strings = false
-      elsif ($chords[chord_index].is_a? Text) or ($chords[chord_index].is_a? Section)
-        lines_to_print.push $chords[chord_index].to_s
+      elsif (chords[chord_index].is_a? Util::Text) or (chords[chord_index].is_a? Util::Section)
+        lines_to_print.push chords[chord_index].to_s
         to_skip_end_strings = true
         chords_in_section = 0
         
-        if $chords[chord_index + 1].is_a? Chord
+        if chords[chord_index + 1].is_a? Chord
           to_print_start_chords = true
         end
       end
 
       chord_index = chord_index + 1
-      if ($chords[chord_index].is_a? Text) or ($chords[chord_index].is_a? Section)
+      if (chords[chord_index].is_a? Util::Text) or (chords[chord_index].is_a? Util::Section)
         is_next_chord_section_or_text = true
       else
         is_next_chord_section_or_text = false
       end
       
-      if ((chords_in_section % $line_length) == 0) or (chord_index == $chords.length) or is_next_chord_section_or_text
+      if ((chords_in_section % Chordy.line_length) == 0) or (chord_index == chords.length) or is_next_chord_section_or_text
         if to_skip_end_strings
           to_skip_end_strings = false
         else
-          end_strings = Chord.end_of_strings $tuning, $end_delimiter
+          end_strings = Chord.end_of_strings Chordy.tuning, Chordy.end_delimiter
           last_chord_lines.each_with_index do |line, i|
             line << end_strings[i]
           end
@@ -217,9 +219,9 @@ module Chordy
         # start the next actual line
         lines_to_print.push ""
         is_new_line = true
-      elsif (chords_in_section % $line_length) == ($line_length / 2) and is_even_line_length
+      elsif (chords_in_section % Chordy.line_length) == (Chordy.line_length / 2) and is_even_line_length
         last_chord_lines.each_with_index do |line, i| 
-          line << Chord.print_half_length_string_at(i, $tuning, $half_length_delimiter, $chord_space)
+          line << Chord.print_half_length_string_at(i, Chordy.tuning, Chordy.half_length_delimiter, Chordy.chord_space)
         end
       end
       
@@ -227,7 +229,7 @@ module Chordy
         is_new_line = false
       end
 
-      if chord_index >= $chords.length
+      if chord_index >= chords.length
         is_done = true
       end
     end
@@ -240,20 +242,20 @@ module Chordy
   Chord::CHORD_FLAGS.each_with_index do |name,i|
     eval <<-ENDOFEVAL
     def #{name}
-      saved_auto = $auto
-      saved_chord_index = $chords.length
-      $auto = false
+      saved_auto = Chordy.auto
+      saved_chord_index = Chordy.chords.length
+      Chordy.auto = false
       begin
         chord = yield if block_given?
         
-        num_new_chords = $chords.length - saved_chord_index
-        $chords.last(num_new_chords).each { |c| c.send :#{name} }
+        num_new_chords = Chody.chords.length - saved_chord_index
+        Chordy.chords.last(num_new_chords).each { |c| c.send :#{name} }
       rescue Exception => e
         puts e.class.to_s
         puts e.message
       end
 
-      $auto = saved_auto
+      Chordy.auto = saved_auto
       do_print
       chord
     end
