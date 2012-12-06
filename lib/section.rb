@@ -1,7 +1,9 @@
 # encoding: utf-8
 
 class Section
-def initialize(title="", separator_length=40)
+  attr_accessor :separator_length
+
+  def initialize(title="", separator_length=40)
     @title = title
     @separator_length = separator_length
   end

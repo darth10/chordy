@@ -63,7 +63,7 @@ module Chordy
     longest_tuning_str_length = tuning.max.length
     $tuning = tuning.map { |e| e.capitalize.rjust(longest_tuning_str_length) }
     
-    $chords = $chords.each { |e| e.pad_or_trim $tuning.length, true }
+    $chords = $chords.select { |c| c.is_a? Chord } .each { |e| e.pad_or_trim $tuning.length, true }
   end
 
   def tune new_tuning
@@ -169,6 +169,8 @@ module Chordy
     is_next_chord_section_or_text = false
     to_print_start_chords = false
     to_skip_end_strings = false
+
+    $chords.select { |c| c.is_a? Section } .each { |s| s.separator_length = $separator_length }
 
     while !is_done
       if is_new_line or to_print_start_chords
