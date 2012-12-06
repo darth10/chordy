@@ -1,4 +1,7 @@
 # encoding: utf-8
 
-class Text < String
+module Util
+
+  class Text < String
+  end
 end

@@ -9,9 +9,11 @@ include_dirs.each do |dir|
   end
 end
 
+include Util
 include Tuning
 
 module Chordy
+
   $line_length = 8
   $separator_length = 40
   $chords = []
