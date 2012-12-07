@@ -246,7 +246,10 @@ Here's the output of the modified script.
 
 == Documentation
 
-Visit the wiki[http://darth10.github.com/chordy] for more information. To generate the API documentation, use <code>rake rdoc</code>.
+The {API documentation}[http://rubydoc.info/github/darth10/chordy/frames/file/README.rdoc] is available on RDoc.info.
+You could also generate the RDoc yourself by using <code>rake rdoc</code>.
+
+Visit the wiki[http://darth10.github.com/chordy] for more information. 
 
 == Contributing
  
