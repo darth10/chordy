@@ -248,7 +248,7 @@ module Chordy
       begin
         chord = yield if block_given?
         
-        num_new_chords = Chody.chords.length - saved_chord_index
+        num_new_chords = Chordy.chords.length - saved_chord_index
         Chordy.chords.last(num_new_chords).each { |c| c.send :#{name} }
       rescue Exception => e
         puts e.class.to_s

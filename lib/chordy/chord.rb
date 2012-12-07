@@ -178,9 +178,10 @@ module Chordy
   Chord::CHORD_FLAGS.each_with_index do |name,i|
     Chord.class_eval <<-ENDOFEVAL
     #{name.upcase} = #{2**i}
-    private 
-    def #{name}()
+
+    def #{name}
       add_flag #{name.upcase}
+      self
     end
     ENDOFEVAL
   end
