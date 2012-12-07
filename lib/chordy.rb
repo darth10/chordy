@@ -54,9 +54,9 @@ module Chordy
 
   def set_tuning_with_padding tuning
     longest_tuning_str_length = tuning.max.length
-    tuning = tuning.map { |e| e.capitalize.rjust(longest_tuning_str_length) }
+    Chordy.tuning = tuning.map { |e| e.capitalize.rjust(longest_tuning_str_length) }
     
-    Chordy.chords = Chordy.select { |c| c.is_a? Chord } .each { |e| e.pad_or_trim Chordy.tuning.length, true }
+    Chordy.chords.select { |c| c.is_a? Chord } .each { |e| e.pad_or_trim Chordy.tuning.length, true }
   end
 
   def tune new_tuning
