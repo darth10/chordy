@@ -8,15 +8,27 @@ module Chordy
     def self.all_flags
       CHORD_FLAGS.to_a
     end
+
+    # gets number of high strings in a tuning by approximation
+    def self.get_num_high_strings length
+      (length / 3.0).ceil
+    end
     
     def self.start_of_strings tuning, start_delimiter, low_to_high
       num_strings = tuning.length
-      strings_range = (0...num_strings).to_a
+      num_high_strings = get_num_high_strings num_strings
+
+      strings_in_downcase = tuning.map { |s| s.downcase }
+      high_strings = strings_in_downcase.last(num_high_strings)
+      low_strings = strings_in_downcase.first(num_strings - num_high_strings).map { |s| s.capitalize }
+
+      strings_range = low_strings + high_strings
       if !low_to_high
         strings_range = strings_range.reverse
       end
 
-      strings_range.map { |s| tuning[s].rjust(2) + start_delimiter.rjust(2) } + [ " " * 4 ]
+      strings_to_print = strings_range.map { |s| s.rjust(2) + start_delimiter.rjust(2) }
+      strings_to_print + [ " " * 4 ]
     end
     
     def self.end_of_strings tuning, end_delimiter
@@ -106,6 +118,11 @@ module Chordy
       method_for_chord_type = "play_" + chord_type.to_s
       chord = eval(method_for_chord_type)
       chord
+    end
+
+    def reverse_strings!
+      @strings = @strings.reverse
+      self
     end
 
     def strings
