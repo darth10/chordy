@@ -9,9 +9,14 @@ module Chordy
       CHORD_FLAGS.to_a
     end
     
-    def self.start_of_strings tuning, start_delimiter
+    def self.start_of_strings tuning, start_delimiter, low_to_high
       num_strings = tuning.length
-      (0...num_strings).map { |s| tuning[s].rjust(2) + start_delimiter.rjust(2) } + [ " " * 4 ]
+      strings_range = (0...num_strings).to_a
+      if !low_to_high
+        strings_range = strings_range.reverse
+      end
+
+      strings_range.map { |s| tuning[s].rjust(2) + start_delimiter.rjust(2) } + [ " " * 4 ]
     end
     
     def self.end_of_strings tuning, end_delimiter
@@ -120,9 +125,18 @@ module Chordy
       self
     end
 
-    def print_string_at i, chord_space
+    def get_index_to_print i, low_to_high
+      if low_to_high
+        i
+      else
+        @strings.length - i - 1
+      end
+    end
+
+    def print_string_at i, chord_space, low_to_high=false
       to_print = chord_space
-      string = @strings[i]
+      index_to_print = get_index_to_print i, low_to_high
+      string = @strings[index_to_print]
       if string != -1
         to_print = string.to_s
       end
@@ -130,7 +144,7 @@ module Chordy
       to_print = to_print.rjust(3, chord_space)
       
       if @flags != 0
-        to_print = print_string_with_flag_at i, to_print, chord_space
+        to_print = print_string_with_flag_at index_to_print, to_print, chord_space
       end
       
       to_print.ljust(4, chord_space)

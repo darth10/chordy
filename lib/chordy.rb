@@ -12,7 +12,7 @@ end
 module Chordy
   extend self, Util, Util::Tuning
 
-  attr_accessor :chords, :line_length, :separator_length, :tuning, :auto, :reverse
+  attr_accessor :chords, :line_length, :separator_length, :tuning, :auto, :low_to_high
   attr_accessor :chord_space, :half_length_delimiter, :start_delimiter, :end_delimiter
 
   @line_length = 8
@@ -20,7 +20,7 @@ module Chordy
   @chords = []
   @auto = true
   @tuning = tuning_6_standard.map { |e| e.capitalize  }
-  @reverse = false
+  @low_to_high = false
 
   # printing delimiters
   @chord_space = "-"
@@ -28,12 +28,24 @@ module Chordy
   @start_delimiter = "["
   @end_delimiter = "]"
 
-  def auto a=true
-    Chordy.auto = if a then true else false end
+  def do_auto a=true
+    Chordy.auto = a
+    Chordy.auto
   end
 
   def no_auto
-    auto false
+    Chordy.auto = false
+    Chordy.auto
+  end
+
+  def do_low_to_high
+    Chordy.low_to_high = true
+    do_print
+  end
+
+  def do_high_to_low
+    Chordy.low_to_high = false
+    do_print
   end
 
   def set_line_length a
@@ -169,7 +181,8 @@ module Chordy
     while !is_done
       if is_new_line or to_print_start_chords
         if chords[chord_index].is_a? Chord
-          start_strings = Chord.start_of_strings Chordy.tuning, Chordy.start_delimiter
+          start_strings = Chord.start_of_strings Chordy.tuning, Chordy.start_delimiter, Chordy.low_to_high
+
           start_strings.each { |s| lines_to_print.push s }
         end
         to_print_start_chords = false
@@ -179,11 +192,11 @@ module Chordy
       last_chord_lines = lines_to_print.last(tuning_length + 1)
       curr_chord = chords[chord_index]
       if curr_chord.is_a? Chord
-        last_chord_lines.each_with_index do |line,i|
+        last_chord_lines.each_with_index do |line, i|
           if i == tuning_length
             line << curr_chord.print_flag
           else
-            line << curr_chord.print_string_at(i, Chordy.chord_space)
+            line << curr_chord.print_string_at(i, Chordy.chord_space, Chordy.low_to_high)
           end
         end
         
