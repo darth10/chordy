@@ -127,7 +127,7 @@ module Chordy
 
         # play high-to-low, unless :low_to_high is specified
         if chord_type_or_direction != :low_to_high
-          chord.reverse_strings
+          chord.reverse_strings!
         end
       else
         chord_name = chords.to_s
