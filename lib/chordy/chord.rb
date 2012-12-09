@@ -8,10 +8,27 @@ module Chordy
     def self.all_flags
       CHORD_FLAGS.to_a
     end
+
+    # gets number of high strings in a tuning by approximation
+    def self.get_num_high_strings length
+      (length / 3.0).ceil
+    end
     
-    def self.start_of_strings tuning, start_delimiter
+    def self.start_of_strings tuning, start_delimiter, low_to_high
       num_strings = tuning.length
-      (0...num_strings).map { |s| tuning[s].rjust(2) + start_delimiter.rjust(2) } + [ " " * 4 ]
+      num_high_strings = get_num_high_strings num_strings
+
+      strings_in_downcase = tuning.map { |s| s.downcase }
+      high_strings = strings_in_downcase.last(num_high_strings)
+      low_strings = strings_in_downcase.first(num_strings - num_high_strings).map { |s| s.capitalize }
+
+      strings_range = low_strings + high_strings
+      if !low_to_high
+        strings_range = strings_range.reverse
+      end
+
+      strings_to_print = strings_range.map { |s| s.rjust(2) + start_delimiter.rjust(2) }
+      strings_to_print + [ " " * 4 ]
     end
     
     def self.end_of_strings tuning, end_delimiter
@@ -103,6 +120,11 @@ module Chordy
       chord
     end
 
+    def reverse_strings!
+      @strings = @strings.reverse
+      self
+    end
+
     def strings
       @strings
     end
@@ -120,9 +142,18 @@ module Chordy
       self
     end
 
-    def print_string_at i, chord_space
+    def get_index_to_print i, low_to_high
+      if low_to_high
+        i
+      else
+        @strings.length - i - 1
+      end
+    end
+
+    def print_string_at i, chord_space, low_to_high=false
       to_print = chord_space
-      string = @strings[i]
+      index_to_print = get_index_to_print i, low_to_high
+      string = @strings[index_to_print]
       if string != -1
         to_print = string.to_s
       end
@@ -130,7 +161,7 @@ module Chordy
       to_print = to_print.rjust(3, chord_space)
       
       if @flags != 0
-        to_print = print_string_with_flag_at i, to_print, chord_space
+        to_print = print_string_with_flag_at index_to_print, to_print, chord_space
       end
       
       to_print.ljust(4, chord_space)
