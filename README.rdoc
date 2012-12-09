@@ -1,7 +1,7 @@
 = chordy  {<img src="https://travis-ci.org/darth10/chordy.png" />}[https://travis-ci.org/darth10/chordy]
 
 chordy is a DSL written in Ruby for printing guitar chord diagrams.
-A chordy script produces output that looks like a song with various chords, sections and notes.
+A chordy script produces output that looks like a song with various chords, sections and arbitrary text.
 
 It supports all chord families and most chord types.
 Variations in a note, such as a palm-mute or a trill, are also supported.  
@@ -16,85 +16,176 @@ Formatting options are also provided.
 After installing the chordy gem, you can start chordy in an interactive mode through <code>irb</code>.
 You can declare chords to play using the <code>play</code> function. 
 
+The <code>play</code> function takes one required arugment, which can be a chord family like C or F#.
+There are a handful of notations to specify a chord family.
+For example, the C chord family can be represented as <code>C</code>, <code>:C</code> or <code>"C"</code>.
+Similarly, F sharp is <code>FSharp</code>, <code>:F!</code> or <code>"F!"</code>.
+A <code>!</code> suffix denotes a sharp, and <code>_</code> denotes a flat.
+
   $ irb -r chordy
-  irb(main):001:0> play C
-   E [--3-]
-   A [--3-]
-   D [--2-]
+  1.9.3p327 :001 > play C
+   e [--0-]
+   b [--1-]
    G [--0-]
-   B [--1-]
-   E [--0-]
-
-
-  => #<C:0x4d896f8 @flags=0, @strings=[3, 3, 2, 0, 1, 0], @type=:major>
-
-  irb(main):002:0> play EFlat
-   E [--3-----]
-   A [--3---1-]
-   D [--2---1-]
+   D [--2-]
+   A [--3-]
+   E [--3-]
+          
+  
+   => #<Chordy::C:0x9288e54 @strings=[3, 3, 2, 0, 1, 0], @type=:major, @flags=0> 
+  
+  1.9.3p327 :002 > play :F!
+   e [--0---2-]
+   b [--1---2-]
    G [--0---3-]
-   B [--1---4-]
-   E [--0---3-]
-
-
-  => #<DSharp:0x4d7afc8 @flags=0, @strings=[-1, 1, 1, 3, 4, 3], @type=:major>
-
-  irb(main):003:0>
+   D [--2---4-]
+   A [--3---4-]
+   E [--3---2-]
+              
+  
+   => #<Chordy::FSharp:0x92673f8 @strings=[2, 4, 4, 3, 2, 2], @type=:major, @flags=0> 
+  
+  1.9.3p327 :003 > play :E_
+   e [--0---2---3-]
+   b [--1---2---4-]
+   G [--0---3---3-]
+   D [--2---4---1-]
+   A [--3---4---1-]
+   E [--3---2-----]
+                  
+  
+   => #<Chordy::DSharp:0x9258e70 @strings=[-1, 1, 1, 3, 4, 3], @type=:major, @flags=0> 
+  
+  1.9.3p327 :004 > 
 
 To specify a chord type such a minor or a suspended chord, specify a second parameter such as <code>:minor</code> or <code>:suspended_4</code>.
 The chord type can also specified in a shorter way like <code>:m</code> or <code>:sus4</code>.
 Note that the default for this parameter is <code>:major</code>, which is shortened to <code>:M</code>.
 This {wiki page}[http://darth10.github.com/chordy/chords.html] contains a complete listing of all chord families and types.
 
-  irb(main):001:0> play C, :minor
-   E [----]
-   A [--3-]
-   D [--1-]
+  1.9.3p327 :001 > play C, :minor
+   e [--3-]
+   b [--4-]
    G [--0-]
-   B [--4-]
+   D [--1-]
+   A [--3-]
+   E [----]
+          
+  
+   => #<Chordy::C:0xa1d0650 @strings=[-1, 3, 1, 0, 4, 3], @type=:minor, @flags=0> 
+
+  1.9.3p327 :002 > play :E_, :sus4
+   e [--3---4-]
+   b [--4---4-]
+   G [--0---1-]
+   D [--1---1-]
+   A [--3---1-]
+   E [--------]
+              
+  
+   => #<Chordy::DSharp:0xa1ae668 @strings=[-1, 1, 1, 1, 4, 4], @type=:suspended_4, @flags=0> 
+
+  1.9.3p327 :003 > 
+
+Chords are printed in high-to-low string order by default.
+To switch to low-to-high and high-to-string orders for printing, use the <code>do_low_to_high</code> and <code>do_high_to_low</code> functions respectively.
+Note that chords are always internally represented in low-to-high string order.
+
+  1.9.3p327 :001 > play C
+   e [--0-]
+   b [--1-]
+   G [--0-]
+   D [--2-]
+   A [--3-]
    E [--3-]
+          
   
+   => #<Chordy::C:0x940be84 @strings=[3, 3, 2, 0, 1, 0], @type=:major, @flags=0> 
   
-  => #<C:0xb72e1924 @flags=0, @strings=[-1, 3, 1, 0, 4, 3], @type=:minor>
-  
-  irb(main):002:0> play E, :sus4
-   E [------0-]
-   A [--3---2-]
-   D [--1---2-]
+  1.9.3p327 :002 > play D
+   e [--0---2-]
+   b [--1---3-]
    G [--0---2-]
-   B [--4---0-]
-   E [--3---0-]
+   D [--2---0-]
+   A [--3---0-]
+   E [--3-----]
+              
   
+   => #<Chordy::D:0x93ea658 @strings=[-1, 0, 0, 2, 3, 2], @type=:major, @flags=0> 
   
-  => #<E:0xb72df138 @flags=0, @strings=[0, 2, 2, 2, 0, 0], @type=:suspended_4>
+  1.9.3p327 :003 > do_low_to_high
+   E [--3-----]
+   A [--3---0-]
+   D [--2---0-]
+   G [--0---2-]
+   b [--1---3-]
+   e [--0---2-]
+              
   
-  irb(main):003:0> 
+   => nil 
+  
+  1.9.3p327 :004 > do_high_to_low
+   e [--0---2-]
+   b [--1---3-]
+   G [--0---2-]
+   D [--2---0-]
+   A [--3---0-]
+   E [--3-----]
+              
+  
+   => nil 
+  
+  1.9.3p327 :005 >
 
 A chord can also be described in terms of it's strings, by just passing an array of integers to the <code>play</code> function.
+The array represents the individual strings of chord in high-to-low string order.
+You can specify low-to-high string order for playing a chord by adding a <code>:low_to_high</code> argument.
 
-  irb(main):001:0> play [5]
-   E [--5-]
-   A [----]
-   D [----]
+  1.9.3-p327 :001 > play [5]
+   e [--5-]
+   b [----]
    G [----]
-   B [----]
+   D [----]
+   A [----]
    E [----]
+          
   
-  
-  => #<Chord:0xb726e2e4 @strings=[5, -1, -1, -1, -1, -1], @flags=0>
-  
-  irb(main):002:0> play [2, 4, 4]
-   E [--5---2-]
-   A [------4-]
-   D [------4-]
+   => #<Chordy::Chord:0x9602440 @strings=[-1, -1, -1, -1, -1, 5], @flags=0> 
+
+  1.9.3-p327 :002 > play [5], :low_to_high
+   e [--5-----]
+   b [--------]
    G [--------]
-   B [--------]
-   E [--------]
+   D [--------]
+   A [--------]
+   E [------5-]
+              
   
+   => #<Chordy::Chord:0x95f8af8 @strings=[5, -1, -1, -1, -1, -1], @flags=0> 
+
+  1.9.3-p327 :003 > play [2, 4, 4]
+   e [--5-------2-]
+   b [----------4-]
+   G [----------4-]
+   D [------------]
+   A [------------]
+   E [------5-----]
+                  
   
-  => #<Chord:0xb726b01c @strings=[2, 4, 4, -1, -1, -1], @flags=0>
+   => #<Chordy::Chord:0x95a9bd8 @strings=[-1, -1, -1, 4, 4, 2], @flags=0> 
+
+  1.9.3-p327 :004 > play [2, 4, 4], :low_to_high
+   e [--5-------2-----]
+   b [----------4-----]
+   G [----------4-----]
+   D [--------------4-]
+   A [--------------4-]
+   E [------5-------2-]
+                      
   
-  irb(main):003:0>
+   => #<Chordy::Chord:0x958d99c @strings=[2, 4, 4, -1, -1, -1], @flags=0> 
+
+  1.9.3-p327 :005 >
 
 You can also play variations in notes, such as a muted chord or a harmonic.
 To play a variation, you can either use the <code>play</code> function suffixed with the variation name to play.
@@ -102,58 +193,107 @@ Alternatively, you could use the name of the variation itself as a function, whi
 For example, the <code>play_mute</code> function plays a muted chord, and the <code>slide_down</code> function plays multiple chords with a slide down.
 This {wiki page}[http://darth10.github.com/chordy/chords.html] contains a complete listing of all supported varations.
 
-  irb(main):001:0> play_mute A
-   E [--0-]
-   A [--0-]
-   D [--2-]
+An interesting consequence is that variations can overlap.
+It's possible that a chord can have a <code>mute</code> as well as a <code>slide_down</code> variation.
+Of course, all such combinations are not possible.
+You won't get an error, but the printing will appear unaffected.
+For example, it's not possible to print both variations in a chord with both <code>mute</code> and <code>harmonic</code> variations.
+
+  1.9.3-p327 :001 > play_mute A
+   e [--0-]
+   b [--2-]
    G [--2-]
-   B [--2-]
+   D [--2-]
+   A [--0-]
    E [--0-]
-        M
+        M 
   
-  => #<A:0x4d85018 @flags=1, @strings=[0, 0, 2, 2, 2, 0], @type=:major>
-  
-  irb(main):002:0> slide_down {
-  irb(main):003:1*   play [2, 2, 4]
-  irb(main):004:1>   play [4, 4, 6]
-  irb(main):005:1> }
-   E [--0---2\--4\]
-   A [--0---2\--4\]
-   D [--2---4\--6\]
+   => #<Chordy::A:0x9f95fac @strings=[0, 0, 2, 2, 2, 0], @type=:major, @flags=1> 
+
+  1.9.3-p327 :002 > slide_down {
+  1.9.3-p327 :003 >     play [2, 4, 4], :low_to_high
+  1.9.3-p327 :004?>     play [4, 6, 6], :low_to_high
+  1.9.3-p327 :005?>   }
+   e [--0---------]
+   b [--2---------]
    G [--2---------]
-   B [--2---------]
-   E [--0---------]
-        M
+   D [--2---4\--6\]
+   A [--0---4\--6\]
+   E [--0---2\--4\]
+        M         
   
-  => #<Chord:0x4d4a1a0 @flags=32, @strings=[4, 4, 6, -1, -1, -1]>
+   => #<Chordy::Chord:0x9d36914 @strings=[4, 6, 6, -1, -1, -1], @flags=32> 
+
+  1.9.3-p327 :006 > mute { slide_down { play [6] } }
+   e [--0-----------6\]
+   b [--2-------------]
+   G [--2-------------]
+   D [--2---4\--6\----]
+   A [--0---4\--6\----]
+   E [--0---2\--4\----]
+        M           M 
   
-  irb(main):006:0>
+   => #<Chordy::Chord:0x9fbbf7c @strings=[-1, -1, -1, -1, -1, 6], @flags=33> 
+
+  1.9.3-p327 :007 > harmonic { mute { play [6] } }
+   e [--0-----------6\-|--6-]
+   b [--2--------------|----]
+   G [--2--------------|----]
+   D [--2---4\--6\-----|----]
+   A [--0---4\--6\-----|----]
+   E [--0---2\--4\-----|----]
+        M           M     M 
+  
+   => #<Chordy::Chord:0x9faed40 @strings=[-1, -1, -1, -1, -1, 6], @flags=3> 
+
+  1.9.3-p327 :008 >
 
 Chordy also supports different tunings.
 The <code>tune</code> function can be used to change the tuning, and has to be supplied with a tuning parameter.
-A tuning is represented as a variable prefixed with <em>tuning_</em>, followed by the number of strings in the tuning and the name of the tuning.
-For example, <code>tuning_7_a</code> represents A-tuning on a 7-string instrument.
+A tuning is represented as <em>tuning_x_y</em>, where <em>x</em> is the number of strings in the tuning and <em>y</em> is the name of the tuning.
+You must also prefix the <code>Chordy</code> module name.
+For example, <code>Chordy.tuning_7_a</code> represents A-tuning on a 7-string instrument.
 This {wiki page}[http://darth10.github.com/chordy/tuning.html] contains a complete listing of all supported tunings.
 
-  irb(main):001:0> tuning_7_a
-  => ["a", "d", "g", "c", "f", "a", "d"]
+  1.9.3-p327 :001 > play :C
+   e [--0-]
+   b [--1-]
+   G [--0-]
+   D [--2-]
+   A [--3-]
+   E [--3-]
+          
   
-  irb(main):002:0> tune tuning_7_a
-  => nil
-  
-  irb(main):003:0> play C
-   A [----]
-   D [--3-]
-   G [--3-]
+   => #<Chordy::C:0x98f60e8 @strings=[3, 3, 2, 0, 1, 0], @type=:major, @flags=0> 
+
+  1.9.3-p327 :002 > Chordy.tuning_7_a
+   => ["a", "d", "g", "c", "f", "a", "d"] 
+
+  1.9.3-p327 :003 > tune Chordy.tuning_7_a
+   d [--0-]
+   a [--1-]
+   f [--0-]
    C [--2-]
-   F [--0-]
-   A [--1-]
-   D [--0-]
+   G [--3-]
+   D [--3-]
+   A [----]
+          
   
+   => nil 
+
+  1.9.3-p327 :004 > play D
+   d [--0---2-]
+   a [--1---3-]
+   f [--0---2-]
+   C [--2---0-]
+   G [--3---0-]
+   D [--3-----]
+   A [--------]
+              
   
-  => #<C:0x4d67018 @flags=0, @strings=[-1, 3, 3, 2, 0, 1, 0], @type=:major>
-  
-  irb(main):004:0>
+   => #<Chordy::D:0x989dc04 @strings=[-1, -1, 0, 0, 2, 3, 2], @type=:major, @flags=0> 
+
+  1.9.3-p327 :005 >
 
 You could also script the chords to play by using <code>require 'chordy_script'</code>.
 Just be sure to call <code>print_chords</code>.
@@ -175,13 +315,12 @@ Here's a sample chordy script.
 Here's what the output of the script looks like.
 
   $ ruby -r rubygems sample.rb
-   E [--3---0-------0--|--3-----]
-   A [--3---2---3---2--|--3---0-]
-   D [--2---2---1---2--|--2---2-]
-   G [--0---1---0---0--|--0---2-]
-   B [--1---0---4---0--|--1-----]
-   E [--0---0---3---0--|--------]
-  
+   e [--0---0---3---0--|--3-----]
+   b [--1---0---4---0--|--3---0-]
+   G [--0---1---0---0--|--2---2-]
+   D [--2---2---1---2--|--0---2-]
+   A [--3---2---3---2--|--1-----]
+   E [--3---0-------0--|--------]
 
 Text can be added by using <code>text</code>.
 To provide structure to your output, use <code>section</code> to separate chords.
@@ -216,33 +355,32 @@ Here's the output of the modified script.
   
   --Intro---------------------------------
   
-   E [--3---0-]
-   A [--3---2-]
-   D [--2---2-]
+   e [--0---0-]
+   b [--1---0-]
    G [--0---1-]
-   B [--1---0-]
-   E [--0---0-]
-  
+   D [--2---2-]
+   A [--3---2-]
+   E [--3---0-]
+              
   
   --Phrase 1------------------------------
   
-   E [------0-]
-   A [--3---2-]
-   D [--1---2-]
+   e [--3---0-]
+   b [--4---0-]
    G [--0---0-]
-   B [--4---0-]
-   E [--3---0-]
-  
+   D [--1---2-]
+   A [--3---2-]
+   E [------0-]
+              
   
   --Phrase 2------------------------------
   
-   E [--3-----]
-   A [--3---0-]
-   D [--2---2-]
-   G [--0---2-]
-   B [--1-----]
+   e [--3-----]
+   b [--3---0-]
+   G [--2---2-]
+   D [--0---2-]
+   A [--1-----]
    E [--------]
-  
 
 == Documentation
 
@@ -261,4 +399,3 @@ Visit the wiki[http://darth10.github.com/chordy] for more information.
 * Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
 * Make sure your code is formatted as described in the Github Ruby style-guide.
 * Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
-
