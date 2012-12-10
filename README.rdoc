@@ -14,7 +14,9 @@ Formatting options are also provided.
 == Usage
 
 After installing the chordy gem, you can start chordy in an interactive mode through <code>irb</code>.
-You can declare chords to play using the <code>play</code> function. 
+You can declare chords to play using the <code>play</code> function.
+
+=== Basic chords 
 
 The <code>play</code> function takes one required arugment, which can be a chord family like C or F#.
 There are a handful of notations to specify a chord family.
@@ -187,8 +189,10 @@ You can specify low-to-high string order for playing a chord by adding a <code>:
 
   1.9.3-p327 :005 >
 
-You can also play variations in notes, such as a muted chord or a harmonic.
-To play a variation, you can either use the <code>play</code> function suffixed with the variation name to play.
+=== Variations
+
+You can also play variations in chords, such as a muted chord or a harmonic.
+To play a variation, use the <em>play_var</em> function, where <em>var</em> is the variation name to play.
 Alternatively, you could use the name of the variation itself as a function, which takes a block of chords to be played.
 For example, the <code>play_mute</code> function plays a muted chord, and the <code>slide_down</code> function plays multiple chords with a slide down.
 This {wiki page}[http://darth10.github.com/chordy/chords.html] contains a complete listing of all supported varations.
@@ -248,6 +252,8 @@ For example, it's not possible to print both variations in a chord with both <co
 
   1.9.3-p327 :008 >
 
+=== Tuning
+
 Chordy also supports different tunings.
 The <code>tune</code> function can be used to change the tuning, and has to be supplied with a tuning parameter.
 A tuning is represented as <em>tuning_x_y</em>, where <em>x</em> is the number of strings in the tuning and <em>y</em> is the name of the tuning.
@@ -295,6 +301,8 @@ This {wiki page}[http://darth10.github.com/chordy/tuning.html] contains a comple
 
   1.9.3-p327 :005 >
 
+=== Scripting
+
 You could also script the chords to play by using <code>require 'chordy_script'</code>.
 Just be sure to call <code>print_chords</code>.
 Here's a sample chordy script.
@@ -321,6 +329,8 @@ Here's what the output of the script looks like.
    D [--2---2---1---2--|--0---2-]
    A [--3---2---3---2--|--1-----]
    E [--3---0-------0--|--------]
+
+=== Text and Sections
 
 Text can be added by using <code>text</code>.
 To provide structure to your output, use <code>section</code> to separate chords.
