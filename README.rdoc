@@ -1,4 +1,4 @@
-= chordy  {<img src="https://travis-ci.org/darth10/chordy.png" />}[https://travis-ci.org/darth10/chordy]
+= chordy  {<img src="https://secure.travis-ci.org/darth10/chordy.png?branch=master" />}[https://travis-ci.org/darth10/chordy]
 
 chordy is a DSL written in Ruby for printing guitar chord diagrams.
 A chordy script produces output that looks like a song with various chords, sections and arbitrary text.
