@@ -1,3 +1,4 @@
+require 'stringio'
 includes = ['chords', 'util']
 
 include_dirs = includes.map { |dir| "chordy/#{dir}/" }
@@ -74,16 +75,12 @@ module Chordy
     strings = [6, 7, 8]
 
     if new_tuning.is_a? Array
-      if strings.include? new_tuning.length
-        if direction == :high_to_low
-          new_tuning = new_tuning.reverse
-        end
-
-        set_chords_to_tuning new_tuning
-        to_do_print = true
-      else
-        puts "Invalid tuning; only " + strings.join(",") + " strings are allowed"
+      if direction == :high_to_low
+        new_tuning = new_tuning.reverse
       end
+
+      set_chords_to_tuning new_tuning
+      to_do_print = true
     else
       if is_tuning? new_tuning.to_s
         new_tuning = eval("#{new_tuning}")
@@ -259,6 +256,14 @@ module Chordy
     # print the buffer
     lines_to_print.each { |l| puts l }
     nil
+  end
+
+  def print_chords_to_string
+    sio = StringIO.new
+    old_stdout, $stdout = $stdout, sio
+    print_chords
+    $stdout = old_stdout
+    sio.string
   end
 
   Chord::CHORD_FLAGS.each_with_index do |name,i|
