@@ -74,16 +74,12 @@ module Chordy
     strings = [6, 7, 8]
 
     if new_tuning.is_a? Array
-      if strings.include? new_tuning.length
-        if direction == :high_to_low
-          new_tuning = new_tuning.reverse
-        end
-
-        set_chords_to_tuning new_tuning
-        to_do_print = true
-      else
-        puts "Invalid tuning; only " + strings.join(",") + " strings are allowed"
+      if direction == :high_to_low
+        new_tuning = new_tuning.reverse
       end
+
+      set_chords_to_tuning new_tuning
+      to_do_print = true
     else
       if is_tuning? new_tuning.to_s
         new_tuning = eval("#{new_tuning}")

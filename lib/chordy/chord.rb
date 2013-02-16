@@ -115,6 +115,10 @@ module Chordy
     def play chord_type
       method_for_chord_type = "play_" + chord_type.to_s
       chord = eval(method_for_chord_type)
+      if chord.length > @strings.length
+        chord = chord.last @strings.length
+      end
+
       chord
     end
 

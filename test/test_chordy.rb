@@ -40,9 +40,17 @@ class TestChordy < Test::Unit::TestCase
     end
   end
 
-  should "have 6,7 or 8 strings" do
-    # TODO implement
-    true
+  should "support any tuning length" do
+    no_auto
+    tuning_range = 1..20
+
+    tuning_range.each do |t|
+      assert_nothing_raised do
+        tuning = ["a"] * t
+        tune tuning
+        play :C
+      end
+    end
   end
 
   should "know strings at different positions" do
