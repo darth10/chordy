@@ -1,3 +1,4 @@
+require 'stringio'
 includes = ['chords', 'util']
 
 include_dirs = includes.map { |dir| "chordy/#{dir}/" }
@@ -255,6 +256,14 @@ module Chordy
     # print the buffer
     lines_to_print.each { |l| puts l }
     nil
+  end
+
+  def print_chords_to_string
+    sio = StringIO.new
+    old_stdout, $stdout = $stdout, sio
+    print_chords
+    $stdout = old_stdout
+    sio.string
   end
 
   Chord::CHORD_FLAGS.each_with_index do |name,i|

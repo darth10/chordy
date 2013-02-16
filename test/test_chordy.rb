@@ -53,6 +53,18 @@ class TestChordy < Test::Unit::TestCase
     end
   end
 
+  should "print to string" do
+    string = 1
+    no_of_strings = 6
+
+    no_auto
+    play [string] * no_of_strings
+    a = print_chords_to_string
+    a_parts = a.split("\n").first(no_of_strings)
+
+    a_parts.each { |c| assert(c.include? string.to_s) }
+  end
+
   should "know strings at different positions" do
     # TODO implement
     true
