@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 includes = ['chords', 'util']
 
 include_dirs = includes.map { |dir| "chordy/#{dir}/" }
@@ -84,7 +82,7 @@ module Chordy
         set_chords_to_tuning new_tuning
         to_do_print = true
       else
-        puts "Invalid tuning; only " + strings.join(",") + " strings are allowed" 
+        puts "Invalid tuning; only " + strings.join(",") + " strings are allowed"
       end
     else
       if is_tuning? new_tuning.to_s
@@ -164,7 +162,7 @@ module Chordy
     do_print
   end
 
-  def separator 
+  def separator
     section
   end
 
@@ -210,14 +208,14 @@ module Chordy
             line << curr_chord.print_string_at(i, Chordy.chord_space, Chordy.low_to_high)
           end
         end
-        
+
         chords_in_section = chords_in_section + 1
         to_skip_end_strings = false
       elsif (chords[chord_index].is_a? Util::Text) or (chords[chord_index].is_a? Util::Section)
         lines_to_print.push chords[chord_index].to_s
         to_skip_end_strings = true
         chords_in_section = 0
-        
+
         if chords[chord_index + 1].is_a? Chord
           to_print_start_chords = true
         end
@@ -229,7 +227,7 @@ module Chordy
       else
         is_next_chord_section_or_text = false
       end
-      
+
       if ((chords_in_section % Chordy.line_length) == 0) or (chord_index == chords.length) or is_next_chord_section_or_text
         if to_skip_end_strings
           to_skip_end_strings = false
@@ -244,11 +242,11 @@ module Chordy
         lines_to_print.push ""
         is_new_line = true
       elsif (chords_in_section % Chordy.line_length) == (Chordy.line_length / 2) and is_even_line_length
-        last_chord_lines.each_with_index do |line, i| 
+        last_chord_lines.each_with_index do |line, i|
           line << Chord.print_half_length_string_at(i, Chordy.tuning, Chordy.half_length_delimiter, Chordy.chord_space)
         end
       end
-      
+
       if is_next_chord_section_or_text
         is_new_line = false
       end
@@ -271,7 +269,7 @@ module Chordy
       Chordy.auto = false
       begin
         chord = yield if block_given?
-        
+
         num_new_chords = Chordy.chords.length - saved_chord_index
         Chordy.chords.last(num_new_chords).each { |c| c.send :#{name} }
       rescue Exception => e

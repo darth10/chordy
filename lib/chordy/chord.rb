@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 module Chordy
 
   class Chord
@@ -13,7 +11,7 @@ module Chordy
     def self.get_num_high_strings length
       (length / 3.0).ceil
     end
-    
+
     def self.start_of_strings tuning, start_delimiter, low_to_high
       num_strings = tuning.length
       num_high_strings = get_num_high_strings num_strings
@@ -30,7 +28,7 @@ module Chordy
       strings_to_print = strings_range.map { |s| s.rjust(2) + start_delimiter.rjust(2) }
       strings_to_print + [ " " * 4 ]
     end
-    
+
     def self.end_of_strings tuning, end_delimiter
       num_strings = tuning.length
       ([ end_delimiter ] * num_strings) + [ "" ]
@@ -71,7 +69,7 @@ module Chordy
         :sus7 => :suspended_7,
       }
     end
-    
+
     def initialize chord, strings
       @strings = [-1] * strings
       pad_low = false
@@ -93,7 +91,7 @@ module Chordy
       pad_or_trim strings, pad_low
       @flags = 0
     end
-    
+
     def pad_or_trim length, pad_low
       if @strings.length > length
         @strings = @strings.last length
@@ -102,7 +100,7 @@ module Chordy
         if pad_low
           first = @strings.first
           min = @strings.min
-          
+
           # play as bar chord
           bar_chord_string = ((first == min) and (min > 0) and (first > 0)) ? first : -1
           @strings = ([bar_chord_string] * diff) + @strings
@@ -159,11 +157,11 @@ module Chordy
       end
 
       to_print = to_print.rjust(3, chord_space)
-      
+
       if @flags != 0
         to_print = print_string_with_flag_at index_to_print, to_print, chord_space
       end
-      
+
       to_print.ljust(4, chord_space)
     end
 
@@ -193,7 +191,7 @@ module Chordy
     end
 
     # for printing flags on diff line
-    def print_flag 
+    def print_flag
       to_print = ""
 
       if has_flag MUTE
@@ -203,7 +201,7 @@ module Chordy
       end
 
       to_print.rjust(3).ljust(4)
-    end 
+    end
   end
 
   Chord::CHORD_FLAGS.each_with_index do |name,i|

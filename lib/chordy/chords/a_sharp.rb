@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require File.join(File.dirname(__FILE__), '..', 'chord')
 
 module Chordy
@@ -20,7 +18,7 @@ module Chordy
     def play_dominant_7_5
       [0, 1, 2, 1, 3, 4]
     end
-    
+
     def play_major_6
       [1, 1, 3, 3, 3, 3]
     end
@@ -40,7 +38,7 @@ module Chordy
     def play_minor_7
       [1, 1, 3, 1, 2, 1]
     end
-    
+
     def play_half_diminished_7
       [1, 1, 2, 1, 2, 4]
     end
