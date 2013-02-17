@@ -58,11 +58,32 @@ class TestChordy < Test::Unit::TestCase
     no_of_strings = 6
 
     no_auto
+    clear
     play [string] * no_of_strings
     a = print_chords_to_string
     a_parts = a.split("\n").first(no_of_strings)
 
     a_parts.each { |c| assert(c.include? string.to_s) }
+  end
+
+  should "be able to show/hide divider" do
+    string_a = [0]
+    Chordy.line_length = 4
+
+    no_auto
+    clear
+    play string_a
+    play string_a
+    play string_a
+    play string_a
+
+    Chordy.show_half_length_delimiter = false
+    chords_without_divider = print_chords_to_string
+    assert(!chords_without_divider.include?(Chordy.half_length_delimiter), "divider is shown")
+
+    Chordy.show_half_length_delimiter = true
+    chords_with_divider = print_chords_to_string
+    assert(chords_with_divider.include?(Chordy.half_length_delimiter), "divider is not shown")
   end
 
   should "know strings at different positions" do
