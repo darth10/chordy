@@ -5,6 +5,11 @@ class TestChordy < Test::Unit::TestCase
     Chord.new(:M, 6)
   end
 
+  def reset_test_chords
+    no_auto
+    clear
+  end
+
   should "have methods and constants for all chord flags" do
     c = test_chord
     methods = c.methods
@@ -41,9 +46,9 @@ class TestChordy < Test::Unit::TestCase
   end
 
   should "support any tuning length" do
-    no_auto
-    tuning_range = 1..20
+    reset_test_chords
 
+    tuning_range = 1..20
     tuning_range.each do |t|
       assert_nothing_raised do
         tuning = ["a"] * t
@@ -54,11 +59,11 @@ class TestChordy < Test::Unit::TestCase
   end
 
   should "print to string" do
+    reset_test_chords
+
     string = 1
     no_of_strings = 6
 
-    no_auto
-    clear
     play [string] * no_of_strings
     a = print_chords_to_string
     a_parts = a.split("\n").first(no_of_strings)
@@ -67,11 +72,11 @@ class TestChordy < Test::Unit::TestCase
   end
 
   should "be able to show/hide divider" do
+    reset_test_chords
+
     string_a = [0]
     Chordy.line_length = 4
 
-    no_auto
-    clear
     play string_a
     play string_a
     play string_a
