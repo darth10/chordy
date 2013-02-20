@@ -11,13 +11,15 @@ end
 module Chordy
   extend self, Util, Util::Tuning
 
-  attr_accessor :chords, :line_length, :separator_length, :tuning, :auto, :low_to_high
+  attr_accessor :chords, :line_length, :separator_length, :tuning
+  attr_accessor :auto, :show_half_length_delimiter, :low_to_high
   attr_accessor :chord_space, :half_length_delimiter, :start_delimiter, :end_delimiter
 
   @line_length = 8
   @separator_length = 40
   @chords = []
   @auto = true
+  @show_half_length_delimiter = true
   @tuning = tuning_6_standard
   @low_to_high = false
 
@@ -45,15 +47,6 @@ module Chordy
   def do_high_to_low
     Chordy.low_to_high = false
     do_print
-  end
-
-  def set_line_length a
-    if a.instance_of? Fixnum
-      Chordy.line_length = a
-      do_print
-    else
-      puts "Invalid length"
-    end
   end
 
   def clear
@@ -239,8 +232,10 @@ module Chordy
         lines_to_print.push ""
         is_new_line = true
       elsif (chords_in_section % Chordy.line_length) == (Chordy.line_length / 2) and is_even_line_length
-        last_chord_lines.each_with_index do |line, i|
-          line << Chord.print_half_length_string_at(i, Chordy.tuning, Chordy.half_length_delimiter, Chordy.chord_space)
+        if Chordy.show_half_length_delimiter
+          last_chord_lines.each_with_index do |line, i|
+            line << Chord.print_half_length_string_at(i, Chordy.tuning, Chordy.half_length_delimiter, Chordy.chord_space)
+          end
         end
       end
 
