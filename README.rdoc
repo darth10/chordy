@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdarth10%2Fchordy.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdarth10%2Fchordy?ref=badge_shield)
+
 = chordy  
 {<img src="https://badge.fury.io/rb/chordy.png" alt="Gem Version" />}[http://badge.fury.io/rb/chordy]
 {<img src="https://secure.travis-ci.org/darth10/chordy.png?branch=master" />}[https://travis-ci.org/darth10/chordy]
@@ -412,3 +414,7 @@ Visit the wiki[http://darth10.github.com/chordy] for more information.
 * Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
 * Make sure your code is formatted as described in the Github Ruby style-guide.
 * Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdarth10%2Fchordy.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdarth10%2Fchordy?ref=badge_large)
