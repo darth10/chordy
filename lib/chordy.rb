@@ -107,24 +107,32 @@ module Chordy
     eval("defined?(#{chord_name}) == 'constant' and #{chord_name}.class == Class")
   end
 
+  def check_exec_eval(chords, chord_type)
+    chords_and_type = chords.to_s + chord_type.to_s
+    chords_and_type.include?("exec") or chords_and_type.include?("eval")
+  end
+
   def play chords, chord_type_or_direction=:major
     chord = nil
     begin
-      if chords.instance_of? Array
-        chord = Chord.new(chords, Chordy.tuning.length)
+      if check_exec_eval(chords, chord_type_or_direction)
+        throw "Permission denied"
+      else if chords.instance_of? Array
+             chord = Chord.new(chords, Chordy.tuning.length)
 
-        # play high-to-low, unless :low_to_high is specified
-        if chord_type_or_direction != :low_to_high
-          chord.reverse_strings!
-        end
-      else
-        chord_name = chords.to_s
-        if !check_chord_class chord_name
-          chord_name = check_sharp_or_flat_chord chord_name
-        end
+             # play high-to-low, unless :low_to_high is specified
+             if chord_type_or_direction != :low_to_high
+               chord.reverse_strings!
+             end
+           else
+             chord_name = chords.to_s
+             if !check_chord_class chord_name
+               chord_name = check_sharp_or_flat_chord chord_name
+             end
 
-        chord_init = "#{chord_name}.new :#{chord_type_or_direction}, #{Chordy.tuning.length}"
-        chord = eval(chord_init)
+             chord_init = "#{chord_name}.new :#{chord_type_or_direction}, #{Chordy.tuning.length}"
+             chord = eval(chord_init)
+           end
       end
 
       Chordy.chords.push chord
